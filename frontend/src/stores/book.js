@@ -2,11 +2,15 @@
 export const book = {
   namespaced: true,
   state: {
-    title: 'book1'
+    title: '',
+    price: 0
   },
   mutations: {
-    title(state, title) {
-      state.title = title
-    },
+    update(state, value) {
+      console.log(value);
+      state = value
+      console.log('title = ' + state.title);
+      console.log('price = ' + state.price);
+    }
   }
 }
