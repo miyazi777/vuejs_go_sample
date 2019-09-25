@@ -1,19 +1,52 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"database/sql"
 
-func test1(c *gin.Context) {
-	c.String(200, "Hello World2")
+	"github.com/gin-gonic/gin"
+	"github.com/go-gorp/gorp"
+	_ "github.com/mattn/go-sqlite3"
+)
+
+type Book struct {
+	Id    int32
+	Name  string
+	Price int32
 }
 
-func test2(c *gin.Context) {
-	c.String(200, "fuga")
+func addBook(c *gin.Context) {
+	var book Book
+	c.Bind(&book)
+
+	dbmap := getDbmap()
+
+	tx, _ := dbmap.Begin()
+	tx.Insert(&book)
+	tx.Commit()
+
+	c.JSON(200, gin.H{
+		"name":  book.Name,
+		"price": book.Price,
+	})
+}
+
+func getDbmap() *gorp.DbMap {
+	db, err := sql.Open("sqlite3", "./test.db")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
+	t := dbmap.AddTableWithName(Book{}, "book").SetKeys(true, "Id")
+	t.ColMap("Id").Rename("id")
+	t.ColMap("Name").Rename("name")
+	t.ColMap("Price").Rename("price")
+	return dbmap
 }
 
 func main() {
 	r := gin.Default()
-	r.GET("/", test1)
-	r.GET("/hoge", test2)
+	r.POST("/book", addBook)
 
 	r.Run(":3000")
 }
