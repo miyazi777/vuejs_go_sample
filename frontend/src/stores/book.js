@@ -7,7 +7,6 @@ export const book = {
   },
   mutations: {
     update(state, value) {
-      console.log(value);
       state = value
       console.log('title = ' + state.title);
       console.log('price = ' + state.price);

@@ -4,11 +4,25 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> |
       <router-link to="/count">Count</router-link> |
-      <router-link to="/books">Books</router-link>
+      <router-link to="/books">Books</router-link> |
+      <router-link to="/test">Test</router-link> |
+      <router-link v-bind:to="{ name : 'test2', params : { id: this.id }}">Test2</router-link>
     </div>
     <router-view/>
   </div>
 </template>
+
+<script>
+  //import _ from 'lodash';
+
+  export default {
+    data() {
+      return {
+        id: 2
+      }
+    },
+  }
+</script>
 
 <style>
 #app {
