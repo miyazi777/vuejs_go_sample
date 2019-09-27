@@ -63,6 +63,21 @@ func test2(c *gin.Context) {
 	})
 }
 
+func test3(c *gin.Context) {
+	//var list []Book
+
+	//list = append(list, Book{Id: 1, Name: "book1", Price: 1000})
+	//list = append(list, Book{Id: 2, Name: "book2", Price: 1000})
+	//list = append(list, Book{Id: 3, Name: "book3", Price: 1000})
+	dbmap := getDbmap()
+	list, _ := dbmap.Select(Book{}, "select * from book")
+	//for _, l := range list {
+	//	book := l.(*Book)
+	//}
+
+	c.JSON(200, list)
+}
+
 func main() {
 	r := gin.Default()
 
@@ -71,6 +86,7 @@ func main() {
 	r.POST("/book", addBook)
 	r.GET("/test", test)
 	r.GET("/test2/:id", test2)
+	r.GET("/test3", test3)
 
 	r.Run(":8000")
 }

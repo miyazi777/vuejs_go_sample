@@ -5,6 +5,7 @@ import {counter} from './stores/counter';
 import {book} from './stores/book';
 import {test} from './stores/test';
 import {test2} from './stores/test2';
+import {test3} from './stores/test3';
 
 Vue.use(Vuex)
 
@@ -15,5 +16,6 @@ export default new Vuex.Store({
     book: book,
     test: test,
     test2: test2,
+    test3: test3,
   }
 })
