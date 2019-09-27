@@ -78,6 +78,59 @@ func test3(c *gin.Context) {
 	c.JSON(200, list)
 }
 
+func test4(c *gin.Context) {
+	currentPageStr := c.DefaultQuery("page", "0")
+	fmt.Printf("current page = %s\n", currentPageStr)
+	currentPage, _ := strconv.Atoi(currentPageStr)
+
+	// calc pagenite
+	dbmap := getDbmap()
+	recordCount, _ := dbmap.SelectInt("select count(*) from book")
+	page := NewPage(int(recordCount), 3)
+
+	list, _ := dbmap.Select(Book{}, "select * from book order by id asc limit ? offset ?", page.perPage, page.calcOffset(currentPage))
+
+	c.JSON(200, gin.H{
+		"books": list,
+		"page": gin.H{
+			"pageCount":   page.pageCount,
+			"recordCount": page.recordCount,
+		},
+	})
+}
+
+type Page struct {
+	recordCount int
+	perPage     int
+	pageCount   int
+}
+
+func NewPage(recordCount int, perPage int) *Page {
+	pageCount := int(recordCount) / perPage
+	fmt.Printf("page %d\n", pageCount)
+	flg := int(recordCount) % perPage
+	fmt.Printf("flg %d\n", flg)
+	if flg > 0 {
+		pageCount++
+	}
+	fmt.Printf("page %d\n", pageCount)
+
+	p := new(Page)
+	p.recordCount = recordCount
+	p.perPage = perPage
+	p.pageCount = pageCount
+	return p
+}
+
+func (p *Page) calcOffset(page int) int {
+	if page > p.pageCount {
+		return 0
+	}
+
+	offset := page * p.perPage
+	return offset
+}
+
 func main() {
 	r := gin.Default()
 
@@ -87,6 +140,7 @@ func main() {
 	r.GET("/test", test)
 	r.GET("/test2/:id", test2)
 	r.GET("/test3", test3)
+	r.GET("/test4", test4)
 
 	r.Run(":8000")
 }
