@@ -99,6 +99,22 @@ func test4(c *gin.Context) {
 	})
 }
 
+func test5(c *gin.Context) {
+	var book Book
+	c.Bind(&book)
+
+	dbmap := getDbmap()
+
+	tx, _ := dbmap.Begin()
+	tx.Insert(&book)
+	tx.Commit()
+
+	c.JSON(200, gin.H{
+		"name":  book.Name,
+		"price": book.Price,
+	})
+}
+
 type Page struct {
 	recordCount int
 	perPage     int
@@ -141,6 +157,7 @@ func main() {
 	r.GET("/test2/:id", test2)
 	r.GET("/test3", test3)
 	r.GET("/test4", test4)
+	r.POST("/test5", test5)
 
 	r.Run(":8000")
 }
