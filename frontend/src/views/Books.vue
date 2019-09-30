@@ -25,6 +25,11 @@
     methods: {
       save() {
         this.$store.commit("book/update", this.book);
+      },
+      async fetchItem() {
+        const res = await axios.get('http://localhost:8000/item/3')
+        console.log(res.data);
+        this.items = res.data
       }
     }
   }

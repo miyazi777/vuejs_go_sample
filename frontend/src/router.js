@@ -55,6 +55,26 @@ export default new Router({
       path: '/test5',
       name: 'test5',
       component: () => import('./views/Test5.vue')
+    },
+    {
+      path: '/items',
+      name: 'items',
+      component: () => import('./views/Items.vue')
+    },
+    {
+      path: '/item/new',
+      name: 'itemNew',
+      component: () => import('./views/ItemNew.vue')
+    },
+    {
+      path: '/item/:id/update',
+      name: 'itemUpdate',
+      component: () => import('./views/ItemUpdate.vue')
+    },
+    {
+      path: '/item/:id',
+      name: 'itemDetail',
+      component: () => import('./views/ItemDetail.vue')
     }
   ]
 })

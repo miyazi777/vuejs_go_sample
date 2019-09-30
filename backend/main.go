@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"todo/db"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-gorp/gorp"
@@ -147,6 +149,39 @@ func (p *Page) calcOffset(page int) int {
 	return offset
 }
 
+func getItems(c *gin.Context) {
+	itemRepository := &db.ItemRepository{}
+	items := itemRepository.GetList()
+	c.JSON(200, items)
+}
+
+func getItem(c *gin.Context) {
+	idStr := c.Param("id")
+	id, _ := strconv.Atoi(idStr)
+
+	itemRepository := &db.ItemRepository{}
+	item := itemRepository.Get(id)
+	c.JSON(200, item)
+}
+
+func addItem(c *gin.Context) {
+	var item db.Item
+	c.Bind(&item)
+
+	itemRepository := &db.ItemRepository{}
+	itemRepository.Add(&item)
+	c.JSON(200, item)
+}
+
+func updateItem(c *gin.Context) {
+	var item db.Item
+	c.Bind(&item)
+
+	itemRepository := &db.ItemRepository{}
+	itemRepository.Update(&item)
+	c.JSON(200, item)
+}
+
 func main() {
 	r := gin.Default()
 
@@ -158,6 +193,11 @@ func main() {
 	r.GET("/test3", test3)
 	r.GET("/test4", test4)
 	r.POST("/test5", test5)
+
+	r.GET("/items", getItems)
+	r.GET("/item/:id", getItem)
+	r.POST("/item", addItem)
+	r.PATCH("/item", updateItem)
 
 	r.Run(":8000")
 }
